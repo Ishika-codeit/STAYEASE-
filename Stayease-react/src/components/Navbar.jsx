@@ -31,28 +31,40 @@ const Navbar = ()=>{
             Home
         </Link>
 
-        <Link to="/Search" className="relative hover:text-[#6C5CE7] transition duration-200
+        <Link to="/search" className="relative hover:text-[#6C5CE7] transition duration-200
             after:content-[''] after:absolute after:left-0 after:-bottom-1
             after:h-0.5 after:w-0 after:bg-[#6C5CE7]
             after:transition-all after:duration-300 hover:after:w-full">
             Search
         </Link>
 
-        <Link to="/HostListing" className="relative hover:text-[#00CEC9] transition duration-200
+        <Link to="/host-listing" className="relative hover:text-[#00CEC9] transition duration-200
             after:content-[''] after:absolute after:left-0 after:-bottom-1
             after:h-0.5 after:w-0 after:bg-[#00CEC9]
             after:transition-all after:duration-300 hover:after:w-full">
             Host-listing
         </Link>
 
-        <Link to="/Contact" className="relative hover:text-[#6C5CE7] transition duration-200
-            after:content-[''] after:absolute after:left-0 after:-bottom-1
-            after:h-0.5 after:w-0 after:bg-[#6C5CE7]
-            after:transition-all after:duration-300 hover:after:w-full">
-            Contact
-        </Link>
+        <Link
+  to="/MyListings"
+  className="relative hover:text-[#6C5CE7] transition duration-200
+  after:content-[''] after:absolute after:left-0 after:-bottom-1
+  after:h-0.5 after:w-0 after:bg-[#6C5CE7]
+  after:transition-all after:duration-300 hover:after:w-full"
+>
+  My Listings
+</Link>
 
-        <Link to="/Login" className="relative hover:text-[#00CEC9] transition duration-200
+<Link
+  to="/MyBookings"
+  className="relative hover:text-[#00CEC9] transition duration-200
+  after:content-[''] after:absolute after:left-0 after:-bottom-1
+  after:h-0.5 after:w-0 after:bg-[#00CEC9]
+  after:transition-all after:duration-300 hover:after:w-full"
+>
+  My Bookings
+</Link>
+        <Link to="/login" className="relative hover:text-[#00CEC9] transition duration-200
             after:content-[''] after:absolute after:left-0 after:-bottom-1
             after:h-0.5 after:w-0 after:bg-[#00CEC9]
             after:transition-all after:duration-300 hover:after:w-full">
@@ -60,7 +72,7 @@ const Navbar = ()=>{
         </Link>
 
        { /*SIGNUP BUTTON*/}
-        <Link to="/Signup" className="bg-linear-to-r from-[#6C5CE7] to-[#00CEC9] 
+        <Link to="/signup" className="bg-linear-to-r from-[#6C5CE7] to-[#00CEC9] 
             text-black font-bold px-4 py-2 rounded-lg shadow-md
             hover:shadow-xl hover:scale-105 active:scale-95 transition">
             SignUp

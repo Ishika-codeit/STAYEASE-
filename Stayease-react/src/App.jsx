@@ -4,9 +4,12 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Search from "./pages/Search";
 import HostListing from "./pages/HostListing";
-import Contact from "./pages/Contact";
+import MyListings from "./pages/MyListings";
 import NotFound from "./pages/NotFound";
 import Home from './pages/Home';
+import ListingDetails from "./pages/ListingDetails";
+import Booking from "./pages/Booking";
+import MyBookings from "./pages/MyBookings"; 
 
 const App = () => {
     return (
@@ -21,9 +24,24 @@ const App = () => {
 
         <Route path="/search" element={<Search />} />
 
-        <Route path="/host-listing" element={<HostListing />} />
+        <Route path="/hostlisting" element={<HostListing />} />
 
-        <Route path="/contact" element={<Contact />} />
+
+        <Route
+  path="/listing/:id"
+  element={<ListingDetails />}
+/>
+    <Route path="/booking/:id" element={<Booking />} />
+    
+        <Route
+          path="/mylistings"
+          element={<MyListings />}
+        />
+
+        <Route
+          path="/mybookings"
+          element={<MyBookings />}
+        />
 
         <Route path="*" element={<NotFound />} />
 

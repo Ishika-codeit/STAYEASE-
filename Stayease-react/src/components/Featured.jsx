@@ -1,5 +1,8 @@
 import ListingCard from "./ListingCard";
 import listing from "../data/listing";
+const featuredListings = listing.filter(
+  (item) => [1, 2, 5, 7, 10].includes(item.id)
+);
 
 const Featured = () => {
   return (
@@ -14,7 +17,7 @@ const Featured = () => {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
-        {listing.map((listing) => (
+        {featuredListings.map((listing) => (
           <ListingCard
             key={listing.id}
             image={listing.image}
