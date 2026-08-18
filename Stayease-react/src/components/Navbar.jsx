@@ -38,7 +38,7 @@ const Navbar = ()=>{
             Search
         </Link>
 
-        <Link to="/host-listing" className="relative hover:text-[#00CEC9] transition duration-200
+        <Link to="/hostlisting" className="relative hover:text-[#00CEC9] transition duration-200
             after:content-[''] after:absolute after:left-0 after:-bottom-1
             after:h-0.5 after:w-0 after:bg-[#00CEC9]
             after:transition-all after:duration-300 hover:after:w-full">

@@ -64,7 +64,8 @@ const HostListing = () => {
  const handleSubmit = (e) => {
   e.preventDefault();
 
-  const listingData = {
+  const newListing = {
+    id: Date.now(),
     title,
     category,
     location,
@@ -74,11 +75,27 @@ const HostListing = () => {
     bathrooms,
     amenities,
     description,
-    image,
+    image: imagePreview,
     available,
+    rating: 0,
+    badge: "New",
+    host: {
+      name: "Current Host",
+      verified: false,
+    },
+    reviews: [],
   };
 
-  console.log("New Listing:", listingData);
+  const existingListings =
+    JSON.parse(localStorage.getItem("myListings")) || [];
+
+  localStorage.setItem(
+    "myListings",
+    JSON.stringify([
+      ...existingListings,
+      newListing,
+    ])
+  );
 
   setListingCreated(true);
 };
