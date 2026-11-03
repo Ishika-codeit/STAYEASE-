@@ -28,8 +28,28 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ["guest", "host"],
+      enum: ["guest", "host", "admin"],
       default: "guest",
+    },
+
+    avatar: {
+      type: String,
+      default: "",
+    },
+
+    bio: {
+      type: String,
+      default: "",
+    },
+
+    city: {
+      type: String,
+      default: "",
+    },
+
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
   },
   {

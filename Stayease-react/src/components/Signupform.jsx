@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { authAPI } from "../services/api";
+import { useToast } from "../context/ToastContext";
 
 const SignupForm = () => {
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,335 +18,189 @@ const SignupForm = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setError("");
-    setSuccess("");
 
-    // Password match
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
 
     if (password.length < 6) {
-  setError("Password must be at least 6 characters.");
-  return;
-}
+      setError("Password must be at least 6 characters.");
+      return;
+    }
 
-if (phone.length !== 10) {
-  setError("Please enter a valid 10-digit phone number.");
-  return;
-}
+    if (phone.length !== 10) {
+      setError("Please enter a valid 10-digit phone number.");
+      return;
+    }
 
     try {
       setLoading(true);
 
-      const response = await fetch(
-        "http://localhost:5000/api/auth/signup",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fullName,
-            email,
-            phone,
-            password,
-            role,
-          }),
-        }
-      );
+      await authAPI.signup({
+        fullName,
+        email,
+        phone,
+        password,
+        role,
+      });
 
-      const data = await response.json();
+      showToast("Account created successfully! 🎉 Redirecting to login...", "success");
 
-      // Backend error
-      if (!response.ok) {
-        setError(data.message || "Signup failed.");
-        setLoading(false);
-        return;
-      }
-
-      // Success
-      setSuccess("Account created successfully! 🎉");
-      setLoading(false);
-
-      // Redirect to login
       setTimeout(() => {
         navigate("/login");
-      }, 1500);
-
-    } catch (error) {
-      console.error("Signup Error:", error);
-
-      setError(
-        "Unable to connect to server. Please try again."
-      );
-
+      }, 1000);
+    } catch (err) {
+      console.error("Signup Error:", err);
+      setError(err.message || "Unable to create account. Please try again.");
+      showToast(err.message || "Signup failed.", "error");
+    } finally {
       setLoading(false);
     }
   };
 
   return (
     <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden grid md:grid-cols-2">
-
       {/* Left Side */}
       <div className="hidden md:flex flex-col justify-center items-center bg-linear-to-br from-[#6C5CE7] to-[#00CEC9] text-white p-10">
-
-        <h1 className="text-4xl font-bold mb-4">
-          Welcome to StayEase+
-        </h1>
-
-        <p className="text-center text-lg opacity-90">
-          Find your perfect stay, discover amazing places
-          and become a host with just a few clicks.
+        <h1 className="text-4xl font-bold mb-4">Welcome to StayEase+</h1>
+        <p className="text-center text-lg opacity-90 max-w-md">
+          Join thousands of guests and verified hosts discovering safe, comfortable stays across India.
         </p>
-
       </div>
 
-     
       {/* Right Side */}
-      <div className="p-10">
-
-        <h2 className="text-3xl font-bold mb-2">
-          Create Account
-        </h2>
-
-        <p className="text-gray-500 mb-8">
-          Join StayEase and start exploring.
+      <div className="p-8 md:p-12">
+        <h2 className="text-3xl font-bold mb-2 text-gray-900">Create Account</h2>
+        <p className="text-gray-500 mb-8 text-sm">
+          Join StayEase+ and start exploring verified student PGs and accommodations.
         </p>
 
-
-        {/* Error Message */}
         {error && (
-          <div className="mb-5 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
+          <div className="mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
             {error}
           </div>
         )}
 
-
-        {/* Success Message */}
-        {success && (
-  <div className="mb-5 rounded-2xl border border-[#6C5CE7]/20 bg-linear-to-r from-[#6C5CE7]/10 to-[#00CEC9]/10 p-4 shadow-sm">
-    <div className="flex items-center gap-3">
-
-      <div className="w-9 h-9 rounded-full bg-linear-to-r from-[#6C5CE7] to-[#00CEC9] flex items-center justify-center text-white font-bold">
-        ✓
-      </div>
-
-      <div>
-        <p className="font-semibold bg-linear-to-r from-[#6C5CE7] to-[#00CEC9] bg-clip-text text-transparent">
-          Account Created Successfully
-        </p>
-
-        <p className="text-sm text-gray-500">
-          Welcome to StayEase+! Redirecting you to login...
-        </p>
-      </div>
-
-    </div>
-  </div>
-)}
-
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
-
-          {/* Full Name */}
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
             placeholder="Full Name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             required
-            className="w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#6C5CE7]"
+            className="w-full border border-gray-200 rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-[#6C5CE7] text-sm"
           />
 
-
-          {/* Email */}
           <input
             type="email"
             placeholder="Email Address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#6C5CE7]"
+            className="w-full border border-gray-200 rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-[#6C5CE7] text-sm"
           />
 
-
-          {/* Phone */}
           <input
-  type="tel"
-  placeholder="Phone Number"
-  value={phone}
-  onChange={(e) => {
-    const value = e.target.value.replace(/\D/g, "");
-    if (value.length <= 10) {
-      setPhone(value);
-    }
-  }}
-  required
-  maxLength={10}
-  pattern="[0-9]{10}"
-  title="Phone number must be exactly 10 digits"
-  className="w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#6C5CE7]"
-/>
+            type="tel"
+            placeholder="10-Digit Phone Number"
+            value={phone}
+            onChange={(e) => {
+              const val = e.target.value.replace(/\D/g, "");
+              if (val.length <= 10) setPhone(val);
+            }}
+            required
+            maxLength={10}
+            className="w-full border border-gray-200 rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-[#6C5CE7] text-sm"
+          />
 
-          {/* Password */}
           <div className="relative">
-
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Password"
+              placeholder="Password (min 6 characters)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full border rounded-xl p-3 pr-20 focus:outline-none focus:ring-2 focus:ring-[#6C5CE7]"
+              className="w-full border border-gray-200 rounded-xl p-3.5 pr-20 focus:outline-none focus:ring-2 focus:ring-[#6C5CE7] text-sm"
             />
-
             <button
               type="button"
-              onClick={() =>
-                setShowPassword(!showPassword)
-              }
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[#6C5CE7] font-semibold"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[#6C5CE7] font-bold"
             >
               {showPassword ? "Hide" : "Show"}
             </button>
-
           </div>
 
-
-          {/* Confirm Password */}
           <div className="relative">
-
             <input
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm Password"
               value={confirmPassword}
-              onChange={(e) =>
-                setConfirmPassword(e.target.value)
-              }
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full border rounded-xl p-3 pr-20 focus:outline-none focus:ring-2 focus:ring-[#6C5CE7]"
+              className="w-full border border-gray-200 rounded-xl p-3.5 pr-20 focus:outline-none focus:ring-2 focus:ring-[#6C5CE7] text-sm"
             />
-
             <button
               type="button"
-              onClick={() =>
-                setShowConfirmPassword(
-                  !showConfirmPassword
-                )
-              }
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[#6C5CE7] font-semibold"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[#6C5CE7] font-bold"
             >
               {showConfirmPassword ? "Hide" : "Show"}
             </button>
-
           </div>
 
-
-          {/* Role */}
           <div>
-
-            <p className="font-semibold mb-3">
+            <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
               Register As
             </p>
-
-            <div className="grid grid-cols-2 gap-4">
-
-              {/* Guest */}
+            <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setRole("guest")}
-                className={`border rounded-xl p-3 transition ${
+                className={`border rounded-xl p-3 text-xs font-bold transition ${
                   role === "guest"
-                    ? "bg-[#6C5CE7] text-white"
-                    : "hover:bg-[#6C5CE7] hover:text-white"
+                    ? "bg-[#6C5CE7] text-white border-[#6C5CE7]"
+                    : "border-gray-200 text-gray-700 hover:bg-gray-50"
                 }`}
               >
                 👤 Guest
               </button>
 
-
-              {/* Host */}
               <button
                 type="button"
                 onClick={() => setRole("host")}
-                className={`border rounded-xl p-3 transition ${
+                className={`border rounded-xl p-3 text-xs font-bold transition ${
                   role === "host"
-                    ? "bg-[#00CEC9] text-white"
-                    : "hover:bg-[#00CEC9] hover:text-white"
+                    ? "bg-[#00CEC9] text-black border-[#00CEC9]"
+                    : "border-gray-200 text-gray-700 hover:bg-gray-50"
                 }`}
               >
                 🏠 Host
               </button>
-
             </div>
-
           </div>
 
-
-          {/* Create Account Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl text-white font-semibold
-            bg-linear-to-r from-[#6C5CE7] to-[#00CEC9]
-            hover:from-[#5a4bd6] hover:to-[#00b5b0]
-            hover:scale-[1.02]
-            active:scale-[0.98]
-            active:opacity-80
-            transition-all duration-200
-            shadow-md hover:shadow-lg
-            disabled:opacity-60
-            disabled:cursor-not-allowed
-            disabled:hover:scale-100"
+            className="w-full py-4 rounded-xl text-black font-extrabold text-sm bg-linear-to-r from-[#6C5CE7] to-[#00CEC9] shadow-md hover:scale-102 active:scale-98 transition disabled:opacity-60 disabled:cursor-not-allowed mt-2"
           >
             {loading ? "Creating Account..." : "Create Account"}
           </button>
-
         </form>
 
-
-        {/* Divider */}
-        <div className="my-6 text-center text-gray-500">
-          OR
-        </div>
-
-
-        {/* Google */}
-        <button
-          type="button"
-          className="w-full border rounded-xl py-3 font-semibold hover:bg-gray-100 transition"
-        >
-          Continue with Google
-        </button>
-
-
-        {/* Login */}
-       <div className="text-center mt-7 pt-5 border-t border-gray-100">
-  <p className="text-sm text-gray-500">
-    Already registered with StayEase+?
-  </p>
-
-  <Link
-    to="/login"
-    className="inline-block mt-1 font-semibold
-    bg-linear-to-r from-[#6C5CE7] to-[#00CEC9]
-    bg-clip-text text-transparent
-    hover:opacity-80 transition"
-  >
-    Login to your account →
-  </Link>
-</div>
-
+        <p className="text-center mt-6 text-sm text-gray-600">
+          Already have an account?{" "}
+          <Link to="/login" className="text-[#6C5CE7] font-bold hover:underline">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );
